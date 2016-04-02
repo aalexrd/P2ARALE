@@ -78,6 +78,7 @@ ipch/
 *.ncb
 *.opendb
 *.opensdf
+^.VC.db
 *.sdf
 *.cachefile
 
