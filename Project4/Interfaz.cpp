@@ -62,9 +62,9 @@ int Interfaz::Menu()
 	{
 		system("cls");
 		cout << "Men\243" << endl;
-		cout << "\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337"<< endl;
-		cout << "1  \315  Insertar registro" << endl;
-		cout << "2  \315  Mostrar registro" << endl;
+		cout << "\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337\337" << endl;
+		cout << "1  \315  Crear registro" << endl;
+		cout << "2  \315  Leer registro" << endl;
 		cout << "3  \315  Eliminar registro" << endl;
 		cout << "4  \315  Actualizar registro\n"
 			<< "5  \315  Listar registro\n";

@@ -11,9 +11,9 @@ class CRUD : public fstream
 public:
 	CRUD();
 	~CRUD();
-	void Guardar(Registro& reg);//crear
-	bool Recupera(long n, Registro& reg);//lee
-	void Borrar(long n);//elimina
+	void Guardar(Registro& reg);
+	bool Recupera(long n, Registro& reg);
+	void Borrar(long n);
 	void Actualiza(long n);
 	void Listar();
 	long buscar();

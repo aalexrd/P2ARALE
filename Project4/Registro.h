@@ -10,13 +10,12 @@ public:
 	Registro(char* n, char* c);
 	Registro();
 	void Leer();
-	void Mostrar();
-	const bool Valido();
-	const char* Nombre();
-	const string Cedula();
+	void Mostrar() const;
+	bool getValido() const;
+	char* getNombre();
+	string getCedula() const;
 private:
-	char valido; // Campo que indica si el registro es válido 
-	// S->Válido, N->Inválido
+	char valido; // Campo que indica si el registro es válido S->No se debe borrar, N->Se debe borrar
 	char nombre[34];
 	char cedula[20];
 };

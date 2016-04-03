@@ -1,12 +1,10 @@
 #include "CRUD.h"
 
-CRUD::CRUD() : fstream("file.bin", ios::in | ios::out | ios::binary)
+CRUD::CRUD() : fstream("file.bin", in | out | binary)
 {
 	if (!good())
 	{
-		open("file.bin", ios::in | ios::out | ios::trunc | ios::binary);
-		cout << "fichero creado" << endl;
-		cin.get();
+		open("file.bin", in | out | trunc | binary);
 	}
 }
 
@@ -15,19 +13,19 @@ CRUD::~CRUD()
 	Empaquetar();
 }
 
+// Insertar un nuevo registro al final:
 void CRUD::Guardar(Registro& reg)
 {
-	// Insertar al final:
 	clear();
-	seekg(0, ios::end);
+	seekg(0, end);
 	write(reinterpret_cast<char *>(&reg), sizeof(Registro));
-	cout << reg.Nombre() << endl;
 }
 
+//Lee del archivo y pasa por parametro lo leido, el bool devuelve si hubo algo que leer
 bool CRUD::Recupera(long n, Registro& reg)
 {
 	clear();
-	seekg(n * sizeof(Registro), ios::beg);
+	seekg(n * sizeof(Registro), beg);
 	read(reinterpret_cast<char *>(&reg), sizeof(Registro));
 	return gcount() > 0;
 }
@@ -36,48 +34,50 @@ bool CRUD::Recupera(long n, Registro& reg)
 void CRUD::Borrar(long n)
 {
 	char marca;
-
 	clear();
 	marca = 'N';
-	seekg(n * sizeof(Registro), ios::beg);
+	seekg(n * sizeof(Registro), beg);
 	write(&marca, 1);
 }
 
+//Actualiza un registro del archivo:
 void CRUD::Actualiza(long n)
 {
 	clear();
-	seekg(n * sizeof(Registro), ios::beg);
+	seekg(n * sizeof(Registro), beg);
 	Registro reg;
 	reg.Leer();
 	write(reinterpret_cast<char *>(&reg), sizeof(Registro));
 }
 
+//Lista todos los contenidos del archivo:
 void CRUD::Listar()
 {
 	clear();
 	Registro reg;
 	long n = 0;
-	seekg(0, ios::beg);
+	seekg(0, beg);
 	while (Recupera(n, reg))
 	{
 		reg.Mostrar();
 		n++;
 	}
+	cout << "Presione una tecla para continuar...";
 	cin.get();
 }
 
-// Elimina los registros marcados como borrados
+// Elimina los registros marcados como borrados:
 void CRUD::Empaquetar()
 {
-	ofstream ftemp("file.tmp", ios::out);
+	ofstream ftemp("file.tmp", out);
 	Registro reg;
 
 	clear();
-	seekg(0, ios::beg);
+	seekg(0, beg);
 	do
 	{
 		read(reinterpret_cast<char *>(&reg), sizeof(Registro));
-		if (gcount() > 0 && reg.Valido())
+		if (gcount() > 0 && reg.getValido())
 			ftemp.write(reinterpret_cast<char *>(&reg), sizeof(Registro));
 	}
 	while (gcount() > 0);
@@ -86,11 +86,11 @@ void CRUD::Empaquetar()
 	remove("file.bak");
 	rename("file.bin", "file.bak");
 	rename("file.tmp", "file.bin");
-	open("file.bin", ios::in | ios::out | ios::binary);
+	open("file.bin", in | out | binary);
 }
 
-
-long CRUD::buscar()//encontrar en que posicion esta el registro
+//Encontrar en que posicion esta el registro:
+long CRUD::buscar()
 {
 	cout << "\nDigite la c\202dula a buscar: ";
 	string i;
@@ -99,13 +99,13 @@ long CRUD::buscar()//encontrar en que posicion esta el registro
 	Registro reg; //para guardar temporalmente lo leido del archivo
 	while (Recupera(n, reg))//mientras pueda leer algo del archivo
 	{
-		if (reg.Cedula() == i)
+		if (reg.getCedula() == i)
 		{
 			return n;
 		}
 		n++;
 	}
-	cout << "\nNo se encontro nada en el registro\n";
+	cout << "\nNo se encontr\242 nada en el registro\n";
 	cin.get();
 	return -1;
 }
