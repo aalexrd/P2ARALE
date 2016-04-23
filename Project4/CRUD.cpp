@@ -1,6 +1,7 @@
 #include "CRUD.h"
 
-CRUD::CRUD() : fstream("file.bin", in | out | binary) //abre el archivo file.bin
+template <class T, class S>
+CRUD<T, S>::CRUD() : fstream("file.bin", in | out | binary) //abre el archivo file.bin
 {
 	if (!good()) //si no lo pudo abrir lo crea
 	{
@@ -8,12 +9,13 @@ CRUD::CRUD() : fstream("file.bin", in | out | binary) //abre el archivo file.bin
 	}
 }
 
-CRUD::~CRUD()
+template <class T, class S>
+CRUD<T, S>::~CRUD()
 {
 }
 
-// Insertar un nuevo registro al final:
-void CRUD::Guardar(Registro& reg)
+template <class T, class S>
+void CRUD<T, S>::Guardar(T& reg)// Insertar un nuevo registro al final:
 {
 	if (buscar(reg.getCedula()) == -1)
 	{
@@ -28,8 +30,8 @@ void CRUD::Guardar(Registro& reg)
 	}
 }
 
-//Lee del archivo y pasa por parametro lo leido, el bool devuelve si hubo algo que leer
-bool CRUD::Recupera(long n, Registro& reg)
+template <class T, class S>
+bool CRUD<T, S>::Recupera(long n, T& reg)//Lee del archivo y pasa por parametro lo leido, el bool devuelve si hubo algo que leer
 {
 	clear();
 	seekg(n * sizeof(Registro), beg);
@@ -37,8 +39,8 @@ bool CRUD::Recupera(long n, Registro& reg)
 	return gcount() > 0;
 }
 
-// Elimina el registro deseado
-void CRUD::Borrar(long n)
+template <class T, class S>
+void CRUD<T, S>::Borrar(long n)// Elimina el registro deseado
 {
 	ofstream ftemp("file.tmp", out);
 	Registro reg;
@@ -61,8 +63,8 @@ void CRUD::Borrar(long n)
 	open("file.bin", in | out | binary);
 }
 
-//Actualiza un registro del archivo:
-void CRUD::Actualiza(long n)
+template <class T, class S>
+void CRUD<T, S>::Actualiza(long n)//Actualiza un registro del archivo:
 {
 	Registro reg;
 	reg.Leer();
@@ -79,8 +81,8 @@ void CRUD::Actualiza(long n)
 	}
 }
 
-//Lista todos los contenidos del archivo:
-void CRUD::Listar()
+template <class T, class S>
+void CRUD<T, S>::Listar()//Lista todos los contenidos del archivo:
 {
 	clear();
 	Registro reg;
@@ -95,8 +97,8 @@ void CRUD::Listar()
 	system("pause");
 }
 
-//Encontrar en que posicion esta el registro prguntando el termino de busqueda
-long CRUD::buscar()
+template <class T, class S>
+long CRUD<T, S>::buscar()//Encontrar en que posicion esta el registro prguntando el termino de busqueda
 {
 	cout << "\nDigite la c\202dula a buscar: ";
 	string i;
@@ -104,8 +106,8 @@ long CRUD::buscar()
 	return buscar(i);
 }
 
-//Encontrar la posicion cuando envian de una vez lo que debo buscar
-long CRUD::buscar(string i)
+template <class T, class S>
+long CRUD<T, S>::buscar(S i)//Encontrar la posicion cuando envian de una vez lo que debo buscar
 {
 	long n = 0;
 	Registro reg; //para guardar temporalmente lo leido del archivo
@@ -119,3 +121,5 @@ long CRUD::buscar(string i)
 	}
 	return -1;
 }
+
+template class CRUD<Registro, string>; //forzar compilacion de estas plantillas

@@ -9,7 +9,7 @@ class Interfaz
 {
 private:
 	Registro reg;
-	CRUD datos;
+	CRUD<Registro, string> datos;
 	long numero;
 	string opcion;
 public:

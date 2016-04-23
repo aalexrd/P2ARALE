@@ -6,19 +6,18 @@
 #include "Registro.h"
 using namespace std;
 
+template <class T, class S>
 class CRUD : public fstream
 {
 public:
 	CRUD();
 	~CRUD();
-	void Guardar(Registro& reg);
-	bool Recupera(long n, Registro& reg);
+	void Guardar(T& reg);
+	bool Recupera(long n, T& reg);
 	void Borrar(long n);
 	void Actualiza(long n);
 	void Listar();
 	long buscar();
-	long buscar(string i);
-private:
-	void Empaquetar();
+	long buscar(S i);
 };
 #endif
