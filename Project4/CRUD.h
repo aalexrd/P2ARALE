@@ -17,8 +17,8 @@ public:
 	void Actualiza(long n);
 	void Listar();
 	long buscar();
+	long buscar(string i);
 private:
 	void Empaquetar();
 };
 #endif
-

@@ -1,20 +1,15 @@
 #include "Registro.h"
 
-Registro::Registro(char* n, char* c) : valido('S')
+Registro::Registro(char* n, char* c)
 {
-	if (n) strcpy_s(nombre, n); else strcpy_s(nombre, "");
-	if (c) strcpy_s(cedula, c); else strcpy_s(cedula, "");
+	strcpy_s(nombre, n);
+	strcpy_s(cedula, c);
 }
 
-Registro::Registro(): valido('S')
+Registro::Registro()
 {
 	strcpy_s(nombre, "");
 	strcpy_s(cedula, "");
-}
-
-bool Registro::getValido() const
-{
-	return valido == 'S';
 }
 
 char* Registro::getNombre()
@@ -31,9 +26,7 @@ string Registro::getCedula() const
 void Registro::Leer()
 {
 	system("cls");
-	cout << "Leer registro:" << endl << endl;
-	valido = 'S';
-	cout << "Nombre: ";
+	cout << "\nNombre: ";
 	cin.getline(nombre, 34);
 	cout << "C\202dula: ";
 	cin.getline(cedula, 20);
@@ -42,12 +35,8 @@ void Registro::Leer()
 // Muestra un registro en pantalla, si no está marcado como borrado
 void Registro::Mostrar() const
 {
-	if (getValido())
-	{
-		cout << "\n==========\n"
-			<< "Nombre: " << nombre
-			<< "\nC\202dula: " << cedula
-			<< "\n==========\n";
-	}
+	cout << "\n==========\n"
+		<< "Nombre: " << nombre
+		<< "\nC\202dula: " << cedula
+		<< "\n==========\n";
 }
-

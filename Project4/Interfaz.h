@@ -7,10 +7,13 @@ using namespace std;
 
 class Interfaz
 {
+private:
+	Registro reg;
+	CRUD datos;
+	long numero;
+	string opcion;
 public:
 	Interfaz();
 	void interfaz();
-	int Menu();
 };
 #endif
-

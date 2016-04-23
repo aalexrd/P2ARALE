@@ -1,8 +1,8 @@
 #include "CRUD.h"
 
-CRUD::CRUD() : fstream("file.bin", in | out | binary)
+CRUD::CRUD() : fstream("file.bin", in | out | binary) //abre el archivo file.bin
 {
-	if (!good())
+	if (!good()) //si no lo pudo abrir lo crea
 	{
 		open("file.bin", in | out | trunc | binary);
 	}
@@ -10,15 +10,22 @@ CRUD::CRUD() : fstream("file.bin", in | out | binary)
 
 CRUD::~CRUD()
 {
-	Empaquetar();
 }
 
 // Insertar un nuevo registro al final:
 void CRUD::Guardar(Registro& reg)
 {
-	clear();
-	seekg(0, end);
-	write(reinterpret_cast<char *>(&reg), sizeof(Registro));
+	if (buscar(reg.getCedula()) == -1)
+	{
+		clear();
+		seekg(0, end);
+		write(reinterpret_cast<char *>(&reg), sizeof(Registro));
+	}
+	else
+	{
+		cout << "\nEl estudiante ya esta en la lista.\n";
+		system("pause");
+	}
 }
 
 //Lee del archivo y pasa por parametro lo leido, el bool devuelve si hubo algo que leer
@@ -30,24 +37,46 @@ bool CRUD::Recupera(long n, Registro& reg)
 	return gcount() > 0;
 }
 
-// Marca el registro como borrado:
+// Elimina el registro deseado
 void CRUD::Borrar(long n)
 {
-	char marca;
+	ofstream ftemp("file.tmp", out);
+	Registro reg;
+	long temp = 0;
 	clear();
-	marca = 'N';
-	seekg(n * sizeof(Registro), beg);
-	write(&marca, 1);
+	seekg(0, beg);
+	do
+	{
+		read(reinterpret_cast<char *>(&reg), sizeof(Registro));
+		if (gcount() > 0 && temp != n)
+			ftemp.write(reinterpret_cast<char *>(&reg), sizeof(Registro));
+		temp++;
+	}
+	while (gcount() > 0);
+	ftemp.close();
+	close();
+	remove("file.bak");
+	rename("file.bin", "file.bak");
+	rename("file.tmp", "file.bin");
+	open("file.bin", in | out | binary);
 }
 
 //Actualiza un registro del archivo:
 void CRUD::Actualiza(long n)
 {
-	clear();
-	seekg(n * sizeof(Registro), beg);
 	Registro reg;
 	reg.Leer();
-	write(reinterpret_cast<char *>(&reg), sizeof(Registro));
+	if (buscar(reg.getCedula()) == -1)
+	{
+		clear();
+		seekg(n * sizeof(Registro), beg);
+		write(reinterpret_cast<char *>(&reg), sizeof(Registro));
+	}
+	else
+	{
+		cout << "\nEl estudiante ya esta en la lista.\n";
+		system("pause");
+	}
 }
 
 //Lista todos los contenidos del archivo:
@@ -62,39 +91,22 @@ void CRUD::Listar()
 		reg.Mostrar();
 		n++;
 	}
-	cout << "Presione una tecla para continuar...";
-	cin.get();
+	cout << endl;
+	system("pause");
 }
 
-// Elimina los registros marcados como borrados:
-void CRUD::Empaquetar()
-{
-	ofstream ftemp("file.tmp", out);
-	Registro reg;
-
-	clear();
-	seekg(0, beg);
-	do
-	{
-		read(reinterpret_cast<char *>(&reg), sizeof(Registro));
-		if (gcount() > 0 && reg.getValido())
-			ftemp.write(reinterpret_cast<char *>(&reg), sizeof(Registro));
-	}
-	while (gcount() > 0);
-	ftemp.close();
-	close();
-	remove("file.bak");
-	rename("file.bin", "file.bak");
-	rename("file.tmp", "file.bin");
-	open("file.bin", in | out | binary);
-}
-
-//Encontrar en que posicion esta el registro:
+//Encontrar en que posicion esta el registro prguntando el termino de busqueda
 long CRUD::buscar()
 {
 	cout << "\nDigite la c\202dula a buscar: ";
 	string i;
 	std::getline(cin, i);
+	return buscar(i);
+}
+
+//Encontrar la posicion cuando envian de una vez lo que debo buscar
+long CRUD::buscar(string i)
+{
 	long n = 0;
 	Registro reg; //para guardar temporalmente lo leido del archivo
 	while (Recupera(n, reg))//mientras pueda leer algo del archivo
@@ -105,8 +117,5 @@ long CRUD::buscar()
 		}
 		n++;
 	}
-	cout << "\nNo se encontr\242 nada en el registro\n";
-	cin.get();
 	return -1;
 }
-
